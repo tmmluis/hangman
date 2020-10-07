@@ -64,8 +64,8 @@ class GuessInput extends React.Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input type="text" value={this.state.guess} onChange={this.handleChange}/>
-          <input type="submit" value="Guess"/>
+          <input type="text" value={this.state.guess} onChange={this.handleChange} />
+          <input type="submit" value="Guess" />
         </form>
       </div>
     )
@@ -77,7 +77,7 @@ class Game extends React.Component {
     super(props)
 
     // So that white spaces are automatically revealed
-    const puzzle = props.puzzle.split('').map((letter) => {
+    const puzzle = props.answer.split('').map((letter) => {
       if (letter === ' ') {
         return { value: letter, match: true }
       } else {
@@ -86,7 +86,10 @@ class Game extends React.Component {
     })
 
     this.state = {
-      puzzle
+      puzzle,
+      answer: props.answer,
+      guesses: 0,
+      solved: false
     }
 
     /* state.puzzle is an array of 'letter' objects:
@@ -116,8 +119,12 @@ class Game extends React.Component {
   }
 
   handleGuess = (guess) => {
-    console.log(`your guess: ${guess}`)
+    this.setState({ 
+      solved: guess.toLowerCase() === this.state.answer.toLowerCase(),
+      guesses: this.state.guesses + 1
+    })
   }
+
 
   render() {
     return (
@@ -126,6 +133,7 @@ class Game extends React.Component {
         <Puzzle puzzle={this.state.puzzle} />
         <Keyboard handleLetterClick={this.handleLetterClick} />
         <GuessInput handleGuess={this.handleGuess} />
+        {!!this.state.guesses && <h2>{`Your guess is ${this.state.solved ? 'correct' : 'wrong'}!`}</h2>}
       </div>
     )
   }
@@ -134,6 +142,6 @@ class Game extends React.Component {
 // ========================================
 
 ReactDOM.render(
-  <Game puzzle="Star Wars" category="Movie Title" />,
+  <Game answer="Star Wars" category="Movie Title" />,
   document.getElementById('root')
 )
