@@ -7,22 +7,6 @@ class Game extends React.Component {
     constructor(props) {
         super(props)
 
-        // So that white spaces are automatically revealed
-        const puzzle = props.answer.split('').map((letter) => {
-            if (letter === ' ') {
-                return { value: letter, match: true }
-            } else {
-                return { value: letter, match: false }
-            }
-        })
-
-        this.state = {
-            puzzle,
-            answer: props.answer,
-            guesses: 0,
-            solved: false
-        }
-
         /* state.puzzle is an array of 'letter' objects:
         [
           {
@@ -34,19 +18,41 @@ class Game extends React.Component {
           }
         ]
         */
+        // White spaces are automatically revealed
+        const puzzle = props.answer.split('').map((letter) => {
+            if (letter === ' ') {
+                return { value: letter, match: true }
+            } else {
+                return { value: letter, match: false }
+            }
+        })
 
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+        const keyboard = letters.map((letter) => ({ letter, disabled: false }))
+
+        this.state = {
+            puzzle,
+            answer: props.answer,
+            guesses: 0,
+            solved: false,
+            keyboard
+        }
     }
 
-    handleLetterClick = (pick) => {
-        const puzzle = [...this.state.puzzle].map((letter) => {
-            if (letter.value.toLowerCase() === pick.toLowerCase()) {
+    handleLetterClick = (index) => {
+        const puzzle = this.state.puzzle.map((letter) => {
+            if (letter.value.toLowerCase() === this.state.keyboard[index].letter.toLowerCase()) {
                 return { ...letter, match: true }
             } else {
                 return { ...letter }
             }
         })
 
-        this.setState({ puzzle })
+        // deep cloning
+        const keyboard = JSON.parse(JSON.stringify(this.state.keyboard))
+        keyboard[index].disabled = true
+
+        this.setState({ puzzle, keyboard })
     }
 
     handleGuess = (guess) => {
@@ -62,7 +68,7 @@ class Game extends React.Component {
             <div>
                 <h1>{this.props.category}</h1>
                 <Puzzle puzzle={this.state.puzzle} />
-                <Keyboard handleLetterClick={this.handleLetterClick} />
+                <Keyboard handleLetterClick={this.handleLetterClick} keyboard={this.state.keyboard}/>
                 <GuessInput handleGuess={this.handleGuess} />
                 {!!this.state.guesses && <h2>{`Your guess is ${this.state.solved ? 'correct' : 'wrong'}!`}</h2>}
             </div>

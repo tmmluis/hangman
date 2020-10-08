@@ -2,11 +2,12 @@ import React from 'react'
 
 export default function KeyboardLetter(props) {
     return (
-        <div
+        <button
             className="letter"
-            onClick={() => props.handleLetterClick(props.letter)}
+            onClick={() => props.handleLetterClick(props.index)}
+            disabled={props.disabled}
         >
-            {props.letter}
-        </div>
+            {props.value}
+        </button>
     )
 }

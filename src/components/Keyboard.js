@@ -2,15 +2,15 @@ import React from 'react'
 import KeyboardLetter from './KeyboardLetter'
 
 export default function Keyboard(props) {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-
     return (
         <div className="keyboard">
-            {letters.map((letter, index) => (
+            {props.keyboard.map((letter, index) => (
                 <KeyboardLetter
                     key={index}
-                    letter={letter}
+                    index={index}
+                    value={letter.letter}
                     handleLetterClick={props.handleLetterClick}
+                    disabled={letter.disabled}
                 />
             ))}
         </div>
