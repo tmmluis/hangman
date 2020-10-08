@@ -56,8 +56,16 @@ class Game extends React.Component {
     }
 
     handleGuess = (guess) => {
+        if (guess.toLowerCase() === this.state.answer.toLowerCase()) {
+            const puzzle = this.state.puzzle.map((letter) => ({ ...letter, match: true }))
+            this.setState({
+                puzzle,
+                solved: true,
+                guesses: this.state.guesses + 1
+            })
+        }
+
         this.setState({
-            solved: guess.toLowerCase() === this.state.answer.toLowerCase(),
             guesses: this.state.guesses + 1
         })
     }
